@@ -87,3 +87,30 @@ class DatasetLoader:
         selected_words = words[start_idx:start_idx + n_words]
         
         return segment_type, segment_id, ' '.join(selected_words) 
+    
+    def get_segment_by_id(self, segment_id, preprocess_opts=None, augment_opts=None):
+        """Get a specific segment by ID and apply processing."""
+        # Find the segment with matching ID
+        for segment in self.segments:
+            if segment[1] == segment_id:
+                segment_type, _, text = segment
+                
+                # Apply preprocessing if specified
+                if preprocess_opts:
+                    if preprocess_opts.get('remove_punctuation'):
+                        text = TextPreprocessor.remove_punctuation(text)
+                    if preprocess_opts.get('tokenize'):
+                        text = ' '.join(TextPreprocessor.tokenize(text))
+                    if preprocess_opts.get('pad_length'):
+                        text = TextPreprocessor.pad_text(text, preprocess_opts['pad_length'])
+                
+                # Apply augmentation if specified
+                if augment_opts:
+                    if augment_opts.get('random_insertion'):
+                        text = TextAugmenter.random_insertion(text, augment_opts['random_insertion'])
+                    if augment_opts.get('synonym_replacement'):
+                        text = TextAugmenter.synonym_replacement(text, augment_opts['synonym_replacement'])
+                
+                return segment_type, segment_id, text
+                
+        return None, None, None

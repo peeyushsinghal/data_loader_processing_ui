@@ -1,6 +1,6 @@
 # Text Dataset Loader
 
-A flexible text dataset loader with preprocessing and augmentation capabilities, available through both CLI and REST API interfaces.
+A flexible text dataset loader with preprocessing and augmentation capabilities, available through both CLI and Web UI interfaces.
 
 ## Features
 
@@ -17,8 +17,8 @@ A flexible text dataset loader with preprocessing and augmentation capabilities,
   - Random word insertion
   - Synonym replacement
 - Multiple interfaces:
+  - Web UI (FastAPI + HTML/CSS/JS)
   - Command Line Interface (CLI)
-  - REST API
   - Python module
 
 ## Installation
@@ -42,6 +42,14 @@ pip install -r requirements.txt
 
 ## Quick Start
 
+### Using Web UI
+```bash
+# Start the FastAPI server
+uvicorn app:app --reload
+
+# Open browser at http://localhost:8000
+```
+
 ### Using CLI
 ```bash
 # Basic usage - get random 100-word segment
@@ -49,20 +57,6 @@ python cli.py dataset/sample.txt
 
 # Get 5 samples with preprocessing
 python cli.py dataset/sample.txt --samples 5 --remove-punctuation --tokenize
-```
-
-### Using API
-```bash
-# Start the server
-python app.py
-
-# In another terminal, make a request
-curl -X POST http://localhost:5000/get_random_segment \
-  -H "Content-Type: application/json" \
-  -d '{
-    "file_path": "dataset/sample.txt",
-    "n_words": 100
-  }'
 ```
 
 ### Using as Python Module
@@ -75,6 +69,24 @@ segment_type, segment_id, text = loader.get_random_segment(
     preprocess_opts={'remove_punctuation': True},
     augment_opts={'random_insertion': 2}
 )
+```
+
+## Project Structure
+
+```
+.
+├── app.py              # FastAPI server implementation
+├── cli.py              # Command line interface
+├── dataset_loader.py   # Core dataset loading functionality
+├── dataset_utils.py    # Text processing utilities
+├── requirements.txt    # Project dependencies
+├── static/            # Frontend assets
+│   ├── index.html     # Web UI HTML
+│   ├── styles.css     # Web UI styles
+│   └── script.js      # Web UI JavaScript
+└── dataset/           # Sample datasets
+    ├── sample.txt
+    └── tiny-shakespeare.txt
 ```
 
 ## Detailed Usage
@@ -100,20 +112,28 @@ Arguments:
 - `--random-insertion`: Number of random word insertions
 - `--synonym-replacement`: Number of words to replace with synonyms
 
-### API Endpoints
+### Web UI Endpoints
 
-#### POST /get_random_segment
+#### POST /upload
+Upload a text file for processing.
+
+#### POST /process
+Process text with specified options.
 
 Request body:
 ```json
 {
     "file_path": "path/to/file.txt",
     "n_words": 100,
-    "remove_punctuation": false,
-    "tokenize": false,
-    "pad_length": null,
-    "random_insertion": null,
-    "synonym_replacement": null
+    "preprocess_opts": {
+        "remove_punctuation": false,
+        "tokenize": false,
+        "pad_length": null
+    },
+    "augment_opts": {
+        "random_insertion": null,
+        "synonym_replacement": null
+    }
 }
 ```
 
@@ -126,53 +146,23 @@ Response:
 }
 ```
 
-## Project Structure
-
-```
-.
-├── app.py              # Flask API implementation
-├── cli.py              # Command line interface
-├── dataset_loader.py   # Core dataset loading functionality
-├── dataset_utils.py    # Text processing utilities
-├── requirements.txt    # Project dependencies
-└── dataset/           # Sample datasets
-    ├── sample.txt
-    └── tiny-shakespeare.txt
-```
-
 ## Error Handling
 
 The application handles:
 - File not found errors
 - Invalid file formats
 - Invalid preprocessing/augmentation parameters
-- Server errors (API)
+- Server errors
 
 Common error messages:
-- "file_path is required": Missing file path in API request
+- "file_path is required": Missing file path in request
 - "File not found": Invalid file path
 - "No valid segments found": Empty or invalid text file
-
-## Development
-
-To contribute:
-
-1. Fork the repository
-2. Create a feature branch
-```bash
-git checkout -b feature/new-feature
-```
-3. Make your changes
-4. Run tests (if available)
-5. Submit a pull request
-
-## License
-
-MIT License. See [LICENSE](LICENSE) file for details.
 
 ## Notes
 
 - NLTK data is downloaded automatically on first run
-- API server runs in debug mode by default
-- For large files, CLI interface is recommended over API
+- Web UI server runs in reload mode by default
+- For large files, CLI interface is recommended
 - All text processing is done in memory
+- Uploaded files are stored in 'uploads' directory
