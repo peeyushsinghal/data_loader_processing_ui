@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Processing UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dataset Processing UI</h1>
+        </header>
+        
+        <main class="grid">
+            <!-- Data Selection Panel -->
+            <section class="panel" id="data-selection">
+                <h2>Data Selection</h2>
+                
+                <div class="form-group">
+                    <label for="data-type">Data Type</label>
+                    <select id="data-type">
+                        <option value="text">Text</option>
+                        <option value="image" disabled>Image (Coming Soon)</option>
+                        <option value="audio" disabled>Audio (Coming Soon)</option>
+                        <option value="3d" disabled>3D (Coming Soon)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="file-upload">Upload File</label>
+                    <input type="file" id="file-upload" accept=".txt">
+                    <button id="sample-btn">Use Sample File</button>
+                </div>
+
+                <div class="form-group">
+                    <button id="get-sample-btn">Get New Sample</button>
+                </div>
+
+                <div class="options-group">
+                    <h3>Preprocessing Options</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="remove-punctuation">
+                            Remove Punctuation
+                        </label>
+                        <label>
+                            <input type="checkbox" id="tokenize">
+                            Tokenize
+                        </label>
+                        <label>
+                            <input type="checkbox" id="pad-text">
+                            Pad Text
+                        </label>
+                    </div>
+                    <div id="pad-length-group" class="hidden">
+                        <label for="pad-length">Pad Length</label>
+                        <input type="number" id="pad-length" value="100" min="1">
+                    </div>
+                    <button id="apply-preprocess-btn" class="apply-btn">Apply Preprocessing</button>
+                </div>
+
+                <div class="options-group">
+                    <h3>Augmentation Options</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="random-insertion">
+                            Random Insertion
+                        </label>
+                        <label>
+                            <input type="checkbox" id="synonym-replacement">
+                            Synonym Replacement
+                        </label>
+                    </div>
+                    <div id="augment-params-group" class="hidden">
+                        <div class="form-group">
+                            <label for="random-insertion-count">Random Insertions</label>
+                            <input type="number" id="random-insertion-count" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="synonym-replacement-count">Synonym Replacements</label>
+                            <input type="number" id="synonym-replacement-count" value="1" min="1">
+                        </div>
+                    </div>
+                    <button id="apply-augment-btn" class="apply-btn">Apply Augmentation</button>
+                </div>
+            </section>
+
+            <!-- Data Preprocessing Panel -->
+            <section class="panel" id="preprocessing">
+                <h2>Data Preprocessing</h2>
+                <div class="text-display">
+                    <h3>Original Text</h3>
+                    <div id="original-text" class="text-content"></div>
+                </div>
+                <div class="text-display">
+                    <h3>Preprocessed Text</h3>
+                    <div id="preprocessed-text" class="text-content"></div>
+                </div>
+            </section>
+
+            <!-- Data Augmentation Panel -->
+            <section class="panel" id="augmentation">
+                <h2>Data Augmentation</h2>
+                <div class="text-display">
+                    <h3>Augmented Text</h3>
+                    <div id="augmented-text" class="text-content"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html> 
